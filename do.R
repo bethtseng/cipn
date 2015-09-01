@@ -19,5 +19,9 @@ do <- function(dir){
 	result
 }
 
-
+#transform into train_data form
+train <- function(tbl){
+	tbl[5:ncol(tbl)] <- factor(ifelse(is.na(tbl[5:ncol(tbl)]), 0, 1))
+	tbl
+}
 
