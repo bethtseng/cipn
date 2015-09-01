@@ -7,7 +7,6 @@ do <- function(dir){
 	names(file) <- list.files(dir)
 	tmp <- Reduce(function(...) merge(..., by=c("CHROM", "POS", "ID"), all=TRUE), file)
 	tmp <- arrange(tmp, CHROM)
-	write.table(tmp, file="all_merge", sep="\t", row.names=FALSE)
 	#REF
 	x <- tmp[seq(4,ncol(tmp), 2)]
 	x$m <- x[1]
@@ -16,6 +15,8 @@ do <- function(dir){
 	}
 	names(x$m) <- "REF"
 	result <- cbind(tmp[1:3], x$m, tmp[seq(5, ncol(tmp), 2)])
+	write.table(result, file="all_merge", sep="\t", row.names=FALSE)
+	result
 }
 
 
