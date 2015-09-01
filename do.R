@@ -8,7 +8,14 @@ do <- function(dir){
 	tmp <- Reduce(function(...) merge(..., by=c("CHROM", "POS", "ID"), all=TRUE), file)
 	tmp <- arrange(tmp, CHROM)
 	write.table(tmp, file="all_merge", sep="\t", row.names=FALSE)
-	tmp
+	#REF
+	x <- tmp[seq(4,ncol(tmp), 2)]
+	x$m <- x[1]
+	for(i in 2:ncol(x)-1) {
+		x$m[!is.na(x[i])] = x[i][!is.na(x[i])]
+	}
+	names(x$m) <- "REF"
+	result <- cbind(tmp[1:3], x$m, tmp[seq(5, ncol(tmp), 2)])
 }
 
 
