@@ -26,9 +26,7 @@ train <- function(tbl){
 }
 
 natoref <- function(fram){
-	for(i in 5:ncol(fram)){
-		fram[,i][is.na(fram[,i])] = fram$REF[is.na(file[,i])]
-	}
+	for(i in 5:ncol(fram)){ fram[,i][is.na(fram[,i])] = fram$REF[is.na(file[,i])] }
 	fram
 }
 
