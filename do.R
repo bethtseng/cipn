@@ -25,3 +25,21 @@ train <- function(tbl){
 	tbl
 }
 
+natoref <- function(fram){
+	for(i in 5:ncol(fram)){
+		fram[,i][is.na(fram[,i])] = fram$REF[is.na(file[,i])]
+	}
+	fram
+}
+
+#filtering row with same value in col
+#input data frame and col num(ex: c(5,7,8) )
+condi <- function(fram, col){
+	x <- function(fram, col1, col2){
+		con <- ifelse(as.character(fram[,col1]) == as.character(fram[,col2]), TRUE, FALSE)
+		fram <- fram[con, ][!is.na(con), ]
+	}
+	if(length(col) ==2) fram <- x(fram, col[1], col[2])
+	else fram <- x(x(fram, col[1], col[2]), col[2], col[3])
+	fram
+}
