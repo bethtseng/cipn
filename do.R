@@ -3,17 +3,17 @@ do <- function(dir){
 	library("plyr")
 	library("dplyr")
 	path <- paste(dir, list.files(dir), sep="/")
-	file <- lapply(path, read.table, header=1, sep="\t", quote="")
+	file <- lapply(path, read.table, header=1, sep="\t", quote="", stringsAsFactors =FALSE)
 	names(file) <- list.files(dir)
 	tmp <- Reduce(function(...) merge(..., by=c("CHROM", "POS", "ID"), all=TRUE), file)
 	tmp <- arrange(tmp, CHROM)
 	#REF
 	x <- tmp[seq(4,ncol(tmp), 2)]
-	REF <- sapply(x[,1], function(i){toString(i[1])})
-	for(i in 1:ncol(x)-1) {
-		REF[!is.na(x[i])] = x[i][!is.na(x[i])]
+	x$REF <- x[1]
+	for(i in 2:ncol(x)-1) {
+		x$REF[!is.na(x[i])] = x[i][!is.na(x[i])]
 	}
-	result <- cbind(tmp[1:3], REF, tmp[seq(5, ncol(tmp), 2)])
+	result <- cbind(tmp[1:3], x$REF, tmp[seq(5, ncol(tmp), 2)])
 	#write.table(result, file="all_merge", sep="\t", row.names=FALSE)
 	result
 }
