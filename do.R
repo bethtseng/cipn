@@ -21,10 +21,11 @@ do <- function(dir){
 
 #transform into train_data form
 train <- function(tbl){
-	tbl[5:ncol(tbl)] <- factor(ifelse(is.na(tbl[5:ncol(tbl)]), 0, 1))
+	tbl[5:ncol(tbl)] <- factor(ifelse(is.na(tbl[5:ncol(tbl)]), FALSE, TRUE))
 	tbl
 }
 
+#change all NA to ref
 natoref <- function(fram){
 	for(i in 5:ncol(fram)){ fram[,i][is.na(fram[,i])] = fram$REF[is.na(file[,i])] }
 	fram
@@ -41,3 +42,13 @@ condi <- function(fram, col){
 	else fram <- x(x(fram, col[1], col[2]), col[2], col[3])
 	fram
 }
+
+#t(dataframe) with colname
+ttable <- function(fram){
+	tfram <- t(fram) #read directory to data frame
+	table <- tfram[-(1:4), ]
+	colnames(table) <- paste(tfram[2,], tfram[1,], sep="_")
+	write.table(table, file="snv_table", sep="\t", row.names=FALSE)
+	table
+}
+
