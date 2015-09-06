@@ -9,13 +9,12 @@ do <- function(dir){
 	tmp <- arrange(tmp, CHROM)
 	#REF
 	x <- tmp[seq(4,ncol(tmp), 2)]
-	x$m <- x[1]
-	for(i in 2:ncol(x)-1) {
-		x$m[!is.na(x[i])] = x[i][!is.na(x[i])]
+	REF <- sapply(x[,1], function(i){toString(i[1])})
+	for(i in 1:ncol(x)-1) {
+		REF[!is.na(x[i])] = x[i][!is.na(x[i])]
 	}
-	names(x$m) <- "REF"
-	result <- cbind(tmp[1:3], x$m, tmp[seq(5, ncol(tmp), 2)])
-	write.table(result, file="all_merge", sep="\t", row.names=FALSE)
+	result <- cbind(tmp[1:3], REF, tmp[seq(5, ncol(tmp), 2)])
+	#write.table(result, file="all_merge", sep="\t", row.names=FALSE)
 	result
 }
 
