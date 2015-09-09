@@ -16,9 +16,29 @@ do <- function(dir){
 	names(x$m) <- "REF"
 	result <- cbind(tmp[1:3], x$m, tmp[seq(5, ncol(tmp), 2)])
 	#write.table(result, file="all_merge", sep="\t", row.names=FALSE)
-	colnames(result) <- gsub(" ", "", colnames(result))
 	result
 }
+
+do2 <- function(dir){
+	library("plyr")
+	library("dplyr")
+	path <- paste(dir, list.files(dir), sep="/")
+	file <- lapply(path, read.table, header=1, sep="\t", quote="", stringsAsFactors =FALSE)
+	names(file) <- list.files(dir)
+	tmp <- Reduce(function(...) merge(..., by=c("CHROM", "POS", "ID"), all=TRUE), file)
+	tmp <- arrange(tmp, CHROM)
+	#REF
+	x <- tmp[seq(4,ncol(tmp), 2)]
+	x$m <- x[1]
+	for(i in 2:ncol(x)-1) {
+		x$m[!is.na(x[i])] = x[i][!is.na(x[i])]
+	}
+	names(x$m) <- "REF"
+	result <- cbind(tmp[1:3], x$m, tmp[seq(5, ncol(tmp), 2)])
+	#write.table(result, file="all_merge", sep="\t", row.names=FALSE)
+	result
+}
+
 
 #transform into train_data form
 train <- function(tbl){
@@ -30,13 +50,17 @@ train <- function(tbl){
 clas <- function(fram){
 	class <- c("yes", "yes", "no", "yes", "no", "yes", "no", "no","no","no","no","no","no","no","no","no","no","no","no","no")
 	fram <- cbind(fram, class)
-	#write.table(fram, file="snv_table", sep="\t", row.names=FALSE)
+	#write.table(fram, file="snv_table", sep="\t", row.names=FALSE)	
+	colnames(fram) <- gsub(" ", "", colnames(fram))
 	fram
 }
 
 #change all NA to ref
 natoref <- function(fram){
-	for(i in 5:ncol(fram)){ fram[,i][is.na(fram[,i])] = fram$REF[is.na(fram[,i])] }
+	for(i in 5:ncol(fram)){
+		fram[,i][is.na(fram[,i])] = fram$REF[is.na(fram[,i])]
+		fram[,i] = paste(fram$REF, fram[,i], sep="_")
+	}
 	fram
 }
 
